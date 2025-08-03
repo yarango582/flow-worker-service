@@ -1,14 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { NodeRegistry } from '@flow-platform/node-core';
-import { INode } from '@flow-platform/node-core';
-import { ExecutionContext } from '@flow-platform/node-core';
-import { TaskMessage, ResultMessage } from '@flow-platform/node-core';
+import { NodeRegistry } from 'flow-platform-node-core';
+import { INode } from 'flow-platform-node-core';
+import { ExecutionContext } from 'flow-platform-node-core';
+import { TaskMessage, ResultMessage } from 'flow-platform-node-core';
 import {
   PostgreSQLQueryNode,
   MongoDBOperationsNode,
   DataFilterNode,
   FieldMapperNode,
-} from '@flow-platform/node-core';
+} from 'flow-platform-node-core';
 import { ConfigService } from '../config/config.service';
 import { MessagingService } from '../messaging/messaging.service';
 

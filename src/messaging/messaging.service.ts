@@ -13,7 +13,7 @@ import {
   WorkerHeartbeatMessage,
   SystemMetricsMessage,
   Queues,
-} from '@flow-platform/node-core';
+} from 'flow-platform-node-core';
 import { ConfigService } from '../config/config.service';
 
 @Injectable()

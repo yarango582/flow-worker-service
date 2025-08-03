@@ -8,7 +8,7 @@ import { ExecutionService } from './execution/execution.service';
 import { MessagingService } from './messaging/messaging.service';
 import { HealthService } from './health/health.service';
 import { ConfigService } from './config/config.service';
-import { TaskMessage } from '@flow-platform/node-core';
+import { TaskMessage } from 'flow-platform-node-core';
 
 @Injectable()
 export class AppService implements OnModuleInit, OnModuleDestroy {
