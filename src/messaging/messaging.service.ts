@@ -27,8 +27,8 @@ export class MessagingService implements OnModuleInit, OnModuleDestroy {
       url: this.configService.rabbitmqUrl,
       exchange: this.configService.rabbitmqExchange,
       prefetch: this.configService.rabbitmqPrefetch,
-      reconnectDelay: 5000,
-      maxReconnectAttempts: 10,
+      reconnectDelay: this.configService.reconnectDelay,
+      maxReconnectAttempts: this.configService.maxReconnectAttempts,
     });
 
     this.setupEventListeners();
@@ -191,18 +191,49 @@ export class MessagingService implements OnModuleInit, OnModuleDestroy {
     taskHandler: (task: TaskMessage) => Promise<void>,
   ): Promise<void> {
     try {
+      // Start consumers for all priority queues
+      // High priority tasks are processed first
       await this.rabbitmqClient.consume<TaskMessage>(
-        Queues.TASKS_NORMAL,
-        taskHandler,
+        Queues.TASKS_HIGH,
+        async (task) => {
+          this.logger.debug(`🔴 Processing HIGH priority task: ${task.id}`);
+          await taskHandler(task);
+        },
         {
           noAck: false,
-          prefetch: this.configService.rabbitmqPrefetch,
+          prefetch: Math.ceil(this.configService.rabbitmqPrefetch / 3), // Allocate 1/3 for high priority
         },
       );
 
-      this.logger.log(`🎯 Started consuming tasks from ${Queues.TASKS_NORMAL}`);
+      // Normal priority tasks
+      await this.rabbitmqClient.consume<TaskMessage>(
+        Queues.TASKS_NORMAL,
+        async (task) => {
+          this.logger.debug(`🟡 Processing NORMAL priority task: ${task.id}`);
+          await taskHandler(task);
+        },
+        {
+          noAck: false,
+          prefetch: Math.ceil(this.configService.rabbitmqPrefetch / 2), // Allocate 1/2 for normal priority
+        },
+      );
+
+      // Low priority tasks
+      await this.rabbitmqClient.consume<TaskMessage>(
+        Queues.TASKS_LOW,
+        async (task) => {
+          this.logger.debug(`🟢 Processing LOW priority task: ${task.id}`);
+          await taskHandler(task);
+        },
+        {
+          noAck: false,
+          prefetch: Math.ceil(this.configService.rabbitmqPrefetch / 6), // Allocate 1/6 for low priority
+        },
+      );
+
+      this.logger.log(`🎯 Started consuming tasks from ALL priority queues (HIGH, NORMAL, LOW)`);
     } catch (error) {
-      this.logger.error('❌ Failed to start task consumer', error);
+      this.logger.error('❌ Failed to start task consumers', error);
       throw error;
     }
   }

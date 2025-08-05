@@ -90,4 +90,64 @@ export class ConfigService {
       this.maxConcurrentTasks * 2,
     );
   }
+
+  get nodeEnv(): string {
+    return this.configService.get<string>('NODE_ENV', 'development');
+  }
+
+  get taskTimeoutMs(): number {
+    return this.configService.get<number>('TASK_TIMEOUT_MS', 300000); // 5 minutes
+  }
+
+  get maxRetryAttempts(): number {
+    return this.configService.get<number>('MAX_RETRY_ATTEMPTS', 3);
+  }
+
+  get retryDelayMs(): number {
+    return this.configService.get<number>('RETRY_DELAY_MS', 5000); // 5 seconds
+  }
+
+  get metricsEnabled(): boolean {
+    return this.configService.get<boolean>('METRICS_ENABLED', true);
+  }
+
+  get metricsPort(): number {
+    return this.configService.get<number>('METRICS_PORT', 9092);
+  }
+
+  get healthCheckPort(): number {
+    return this.configService.get<number>('HEALTH_CHECK_PORT', 8081);
+  }
+
+  get gracefulShutdownTimeoutMs(): number {
+    return this.configService.get<number>('GRACEFUL_SHUTDOWN_TIMEOUT_MS', 30000);
+  }
+
+  get taskExecutionTimeoutMs(): number {
+    return this.configService.get<number>('TASK_EXECUTION_TIMEOUT_MS', 120000); // 2 minutes
+  }
+
+  get reconnectDelay(): number {
+    return this.configService.get<number>('RABBITMQ_RECONNECT_DELAY', 5000);
+  }
+
+  get maxReconnectAttempts(): number {
+    return this.configService.get<number>('RABBITMQ_MAX_RECONNECT_ATTEMPTS', 10);
+  }
+
+  get enableAutoScaling(): boolean {
+    return this.configService.get<boolean>('ENABLE_AUTO_SCALING', false);
+  }
+
+  get systemResourceCheckInterval(): number {
+    return this.configService.get<number>('SYSTEM_RESOURCE_CHECK_INTERVAL', 60000); // 1 minute
+  }
+
+  get cpuThreshold(): number {
+    return this.configService.get<number>('CPU_THRESHOLD', 80); // 80%
+  }
+
+  get memoryThreshold(): number {
+    return this.configService.get<number>('MEMORY_THRESHOLD', 80); // 80%
+  }
 }
