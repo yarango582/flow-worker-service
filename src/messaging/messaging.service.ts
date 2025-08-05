@@ -231,7 +231,9 @@ export class MessagingService implements OnModuleInit, OnModuleDestroy {
         },
       );
 
-      this.logger.log(`🎯 Started consuming tasks from ALL priority queues (HIGH, NORMAL, LOW)`);
+      this.logger.log(
+        `🎯 Started consuming tasks from ALL priority queues (HIGH, NORMAL, LOW)`,
+      );
     } catch (error) {
       this.logger.error('❌ Failed to start task consumers', error);
       throw error;
